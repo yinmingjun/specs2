@@ -81,7 +81,7 @@ trait S2StringContext extends S2StringContextImplicitsControl { outer =>
   }
 
   implicit def specificationStructureIsInterpolatedFragment(s: SpecificationStructure): InterpolatedFragment = {
-    lazy val specStructure = s.is
+    lazy val specStructure = s.structure(Env())
     fragmentIsInterpolatedFragment(ff.see(SpecificationRef(specStructure.header, specStructure.arguments, alias = specStructure.header.show)))
   }
 

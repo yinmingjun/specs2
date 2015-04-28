@@ -20,7 +20,7 @@ import specification.create._
  *
  * If the specification is neither sequential or isolated, we force it to be isolated by default.
  */
-trait AllExpectations extends StoredExpectations with FragmentsFactory with SpecificationStructure with ArgumentsCreation {
+trait AllExpectations extends StoredExpectations with FragmentsFactory with SpecificationStructureTemplate with ArgumentsCreation {
   /**
    * @return an example factory which will take the stored results and make them the example result
    */

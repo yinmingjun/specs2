@@ -15,7 +15,7 @@ import scala.collection.concurrent.{Map => CMap, TrieMap}
  *
  * As a result they will be executed randomly but in sequence
  */
-trait RandomSequentialExecution extends SpecificationStructure {
+trait RandomSequentialExecution extends SpecificationStructureTemplate {
   override def map(fs: =>Fragments, env: Env) = super.map(addExecutionConstraints(fs, env))
 
   /**

@@ -64,7 +64,7 @@ case class SpecificationRef(header: SpecHeader, arguments: Arguments, alias: Str
 }
 
 object SpecificationRef {
-  def create(specificationStructure: =>SpecificationStructure): SpecificationRef =
+  def create(specificationStructure: =>SpecificationStructureIs): SpecificationRef =
     create(specificationStructure.is)
 
   def create(specStructure: SpecStructure): SpecificationRef =

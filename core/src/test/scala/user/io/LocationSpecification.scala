@@ -1,6 +1,7 @@
 package user.io
 import org.specs2.Specification
 import org.specs2.io.WithFragments
+import org.specs2.specification.core.Env
 
 class LocationSpecification extends Specification with WithFragments { def is = s2"""
   presentation

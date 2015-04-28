@@ -2,18 +2,17 @@ package org.specs2
 package specification
 
 import main.CommandLine
-import core.{Env, SpecStructure, SpecificationStructure}
-import org.specs2.concurrent.ExecutionEnv
+import specification.core.{SpecificationStructureTemplate, Env, SpecStructure}
+import concurrent.ExecutionEnv
 
 /**
  * The CommandLineArgument trait can be mixed-in an Acceptance Specification to
  * access the command line arguments when defining the specification body
  * with the `def is(commandLine: CommandLine)` method
  */
-trait CommandLineArguments extends SpecificationStructure {
-  def is: SpecStructure = SpecStructure.empty(getClass)
+trait CommandLineArguments extends SpecificationStructureTemplate {
   def is(commandLine: CommandLine): SpecStructure
-  override def structure = (env: Env) => decorate(is(env.arguments.commandLine), env)
+  def structure = (env: Env) => decorate(is(env.arguments.commandLine), env)
 }
 
 /**
@@ -21,10 +20,9 @@ trait CommandLineArguments extends SpecificationStructure {
  * access the Env object when defining the specification body
  * with the `def is(env: Env)` method
  */
-trait Environment extends SpecificationStructure {
-  def is: SpecStructure = SpecStructure.empty(getClass)
+trait Environment extends SpecificationStructureTemplate {
   def is(env: Env): SpecStructure
-  override def structure = (env: Env) => decorate(is(env), env)
+  def structure = (env: Env) => decorate(is(env), env)
 }
 
 /**
@@ -32,9 +30,8 @@ trait Environment extends SpecificationStructure {
  * access the ExecutionEnv object when defining the specification body
  * with the `def is(implicit ee: ExecutionEnv)` method
  */
-trait ExecutionEnvironment extends SpecificationStructure {
-  def is: SpecStructure = SpecStructure.empty(getClass)
+trait ExecutionEnvironment extends SpecificationStructureTemplate {
   def is(implicit executionEnv: ExecutionEnv): SpecStructure
-  override def structure = (env: Env) => decorate(is(env.executionEnv), env)
+  def structure = (env: Env) => decorate(is(env.executionEnv), env)
 }
 

@@ -19,7 +19,7 @@ class LevelsSpec extends Spec { def is = s2"""
 
   trait spec extends org.specs2.mutable.Specification
   case class tree() {
-    def e1 = treeMap(new spec { "t1" >> { "e1" in ok; "e2" in ok } }.is.fragments)(mapper) must beDrawnAs(
+    def e1 = treeMap(new spec { "t1" >> { "e1" in ok; "e2" in ok } }.fragments(Env()))(mapper) must beDrawnAs(
       "Fragment(root)",
       "|",
       "`- Fragment(t1)",
@@ -28,7 +28,7 @@ class LevelsSpec extends Spec { def is = s2"""
       "   |",
       "   `- Fragment(e2)")
 
-    def e2 = treeMap(new spec { "t1" >> { "e1" in ok }; "t2" >> { "e2" in ok } }.is.fragments)(mapper) must beDrawnAs(
+    def e2 = treeMap(new spec { "t1" >> { "e1" in ok }; "t2" >> { "e2" in ok } }.fragments(Env()))(mapper) must beDrawnAs(
       "Fragment(root)",
       "|",
       "+- Fragment(t1)",
@@ -44,7 +44,7 @@ class LevelsSpec extends Spec { def is = s2"""
       f match {
         case Fragment(Text(t), _, _) if t.trim.isEmpty => None
         case Fragment(Text(t), e, l)  => Some(Fragment(Text(t.trim), e, l))
-        case other                       => None
+        case other                    => None
       }
     }
     def beDrawnAs(lines: String*) = be_==(lines.mkString("", "\n", "\n")) ^^ {

@@ -18,12 +18,12 @@ trait ReferenceDsl extends ReferenceCreation {
       fragmentFactory.link(SpecificationRef(s.header, s.arguments, alias = alias, tooltip = tooltip))
 
     def ~(s: => SpecificationStructure): Fragment = {
-      lazy val spec = s.is
+      lazy val spec = s.structure(Env())
       fragmentFactory.link(SpecificationRef(spec.header, spec.arguments, alias = alias))
     }
 
     def ~(s: => SpecificationStructure, tooltip: String): Fragment =  {
-      lazy val spec = s.is
+      lazy val spec = s.structure(Env())
       fragmentFactory.link(SpecificationRef(spec.header, spec.arguments, alias = alias, tooltip = tooltip))
     }
   }
@@ -36,12 +36,12 @@ trait ReferenceDsl extends ReferenceCreation {
       fragmentFactory.see(SpecificationRef(s.header, s.arguments, alias = alias, tooltip = tooltip))
 
     def ~/(s: => SpecificationStructure): Fragment = {
-      lazy val spec = s.is
+      lazy val spec = s.structure(Env())
       fragmentFactory.see(SpecificationRef(spec.header, spec.arguments, alias = alias))
     }
 
     def ~/(s: => SpecificationStructure, tooltip: String): Fragment =  {
-      lazy val spec = s.is
+      lazy val spec = s.structure(Env())
       fragmentFactory.see(SpecificationRef(spec.header, spec.arguments, alias = alias, tooltip = tooltip))
     }
   }
@@ -52,9 +52,9 @@ trait ReferenceDsl extends ReferenceCreation {
  */
 trait ReferenceCreation extends FragmentsFactory {
   def link(s: SpecStructure): Fragment            = fragmentFactory.link(SpecificationRef.create(s))
-  def link(s: =>SpecificationStructure): Fragment = fragmentFactory.link(SpecificationRef.create(s.is))
+  def link(s: =>SpecificationStructure): Fragment = fragmentFactory.link(SpecificationRef.create(s.structure(Env())))
 
   def see(s: SpecStructure): Fragment            = fragmentFactory.see(SpecificationRef.create(s))
-  def see(s: =>SpecificationStructure): Fragment = fragmentFactory.see(SpecificationRef.create(s))
+  def see(s: =>SpecificationStructure): Fragment = fragmentFactory.see(SpecificationRef.create(s.structure(Env())))
 }
 

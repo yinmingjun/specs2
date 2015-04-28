@@ -109,7 +109,7 @@ trait ForEachWithCommandLineArguments[T] extends FragmentsFactory { outer: S2Str
 /**
  * Execute a step before all fragments
  */
-trait BeforeAll extends SpecificationStructure with FragmentsFactory {
+trait BeforeAll extends SpecificationStructureTemplate with FragmentsFactory {
   def beforeAll(): Unit
   override def map(fs: =>core.Fragments) = super.map(fs).prepend(fragmentFactory.step(beforeAll))
 }
@@ -117,7 +117,7 @@ trait BeforeAll extends SpecificationStructure with FragmentsFactory {
 /**
  * Execute a step after all fragments
  */
-trait AfterAll extends SpecificationStructure with FragmentsFactory {
+trait AfterAll extends SpecificationStructureTemplate with FragmentsFactory {
   def afterAll(): Unit
   override def map(fs: =>core.Fragments) = super.map(fs).append(fragmentFactory.step(afterAll))
 }
@@ -125,7 +125,7 @@ trait AfterAll extends SpecificationStructure with FragmentsFactory {
 /**
  * Execute a step before and after all fragments
  */
-trait BeforeAfterAll extends SpecificationStructure with FragmentsFactory {
+trait BeforeAfterAll extends SpecificationStructureTemplate with FragmentsFactory {
   def beforeAll(): Unit
   def afterAll(): Unit
   override def map(fs: =>core.Fragments) = super.map(fs).prepend(fragmentFactory.step(beforeAll)).append(fragmentFactory.step(afterAll))
@@ -134,7 +134,7 @@ trait BeforeAfterAll extends SpecificationStructure with FragmentsFactory {
 /**
  * Execute some fragments before all others
  */
-trait BeforeSpec extends SpecificationStructure {
+trait BeforeSpec extends SpecificationStructureTemplate {
   def beforeSpec: core.Fragments
   override def map(fs: =>core.Fragments) = super.map(fs).prepend(beforeSpec)
 }
@@ -142,7 +142,7 @@ trait BeforeSpec extends SpecificationStructure {
 /**
  * Execute some fragments after all others
  */
-trait AfterSpec extends SpecificationStructure {
+trait AfterSpec extends SpecificationStructureTemplate {
   def afterSpec: core.Fragments
   override def map(fs: =>core.Fragments) = super.map(fs).append(afterSpec)
 }
@@ -150,7 +150,7 @@ trait AfterSpec extends SpecificationStructure {
 /**
  * Execute some fragments before and after all others
  */
-trait BeforeAfterSpec extends SpecificationStructure {
+trait BeforeAfterSpec extends SpecificationStructureTemplate {
   def beforeSpec: core.Fragments
   def afterSpec: core.Fragments
   override def map(fs: =>core.Fragments) = super.map(fs).prepend(beforeSpec).append(afterSpec)

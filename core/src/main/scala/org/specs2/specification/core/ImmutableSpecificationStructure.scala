@@ -15,10 +15,10 @@ import ResultLogicalCombinators._
  * If the examples need to be executed in their own instance of the specification
  * they will be "isolated"
  */
-trait ImmutableSpecificationStructure extends SpecificationStructure {
+trait ImmutableSpecificationStructure extends SpecificationStructureIs {
 
-  override def structure = (env: Env) => {
-    val specStructure = super.structure(env)
+  override def decorate(is: SpecStructure, env: Env) = {
+    val specStructure  = super.decorate(is, env)
     val arguments = env.arguments <| specStructure.arguments
 
     if (!arguments.isolated || env.executionParameters.withoutIsolation)

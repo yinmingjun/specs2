@@ -13,18 +13,18 @@ import create.FragmentsFactory
 trait SpecStructureDsl extends SpecStructureDsl1 with SpecStructureDslLowImplicits { outer =>
 
   implicit class appendSpecStructureToString(s: String) {
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(structure: SpecStructure) : SpecStructure = structure.map(_.prepend(fragmentFactory.text(s)))
   }
 
   implicit class appendSpecStructureToFragment(f: Fragment) {
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(structure: SpecStructure) : SpecStructure  = structure.map(_.prepend(f))
     def ^(arguments: Arguments) : SpecStructure  = fragmentAsSpecStructure(f) ^ arguments
   }
 
   implicit class appendSpecStructureToSpecHeader(header: SpecHeader) {
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(structure: SpecStructure) : SpecStructure = structure.copy(header = header)
     def ^(args: Arguments)          : SpecStructure = SpecStructure(header, args)
     def ^(others: =>Fragments)      : SpecStructure = SpecStructure.create(header, Arguments(), others)
@@ -39,7 +39,7 @@ trait SpecStructureDsl extends SpecStructureDsl1 with SpecStructureDslLowImplici
     def ^(other: String)        : SpecStructure = structure ^ fragmentFactory.text(other)
     def ^(other: Fragment)      : SpecStructure = structure ^ Fragments(other)
     /** warning: if other contains arguments or a title they will be lost! */
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(other: SpecStructure): SpecStructure     = structure.copy(arguments = structure.arguments.overrideWith(other.arguments)) ^ other.fragments
     def ^(arguments: Arguments): SpecStructure     = structure.copy(arguments = structure.arguments.overrideWith(arguments))
   }
@@ -68,7 +68,7 @@ trait SpecStructureDslLowImplicits {
     SpecStructure.create(SpecHeader(getClass), Arguments(), Fragments(Fragment(NoText, Execution.result(r))))
 
   implicit class appendSpecStructureToFragments(fs: =>Fragments) {
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(structure: SpecStructure) : SpecStructure = structure.map(_.prepend(fs))
   }
 }
@@ -77,7 +77,7 @@ private[specs2]
 trait SpecStructureDsl1 extends FragmentsFactory { outer =>
   implicit class appendToArguments(args: Arguments) {
     def ^(other: Arguments)         : Arguments = args.overrideWith(other)
-    def ^(s: SpecificationStructure): SpecStructure = ^(s.is)
+    def ^(s: SpecificationStructure): SpecStructure = ^(s.structure(Env()))
     def ^(structure: SpecStructure) : SpecStructure = structure.copy(arguments = args)
     def ^(header: SpecHeader)       : SpecStructure = SpecStructure(header, args)
     def ^(others: =>Fragments)      : SpecStructure = SpecStructure(SpecHeader(specClass = outer.getClass), args, () => others)

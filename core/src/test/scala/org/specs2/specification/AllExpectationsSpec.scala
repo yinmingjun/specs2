@@ -2,10 +2,9 @@ package org.specs2
 package specification
 
 import _root_.org.specs2.mutable.{Specification => Spec}
-import org.specs2.data.Fold
 import org.specs2.execute.Result
 import org.specs2.main.Arguments
-import org.specs2.specification.core.{Env, ContextualSpecificationStructure, SpecificationStructure}
+import org.specs2.specification.core.{Env, SpecificationStructure}
 import org.specs2.specification.process.{DefaultSelector, Statistics, Stats, DefaultExecutor}
 import reporter._
 import user.specification._
@@ -61,7 +60,7 @@ class AllExpectationsSpec extends Spec with AllExpectations {
     }
   }
 
-  def stats(spec: ContextualSpecificationStructure)(args: Arguments): Stats = {
+  def stats(spec: SpecificationStructure)(args: Arguments): Stats = {
     val env = Env(arguments = args)
     try {
       val executed = DefaultExecutor.executeSpecWithoutShutdown(spec.structure(env) |> DefaultSelector.select(env), env)
@@ -70,16 +69,16 @@ class AllExpectationsSpec extends Spec with AllExpectations {
     finally env.shutdown
   }
 
-  def results(spec: ContextualSpecificationStructure)(args: Arguments): IndexedSeq[Result] = {
+  def results(spec: SpecificationStructure)(args: Arguments): IndexedSeq[Result] = {
     val env = Env(arguments = args)
     try DefaultExecutor.executeSpecWithoutShutdown(spec.structure(env), env).fragments.fragments.map(_.executionResult)
     finally env.shutdown
   }
 
-  def issues(spec: ContextualSpecificationStructure)(args: Arguments): IndexedSeq[Result] =
+  def issues(spec: SpecificationStructure)(args: Arguments): IndexedSeq[Result] =
     results(spec)(args).filter(r => r.isError || r.isFailure)
 
-  def suspended(spec: ContextualSpecificationStructure)(args: Arguments): IndexedSeq[Result] =
+  def suspended(spec: SpecificationStructure)(args: Arguments): IndexedSeq[Result] =
     results(spec)(args).filter(r => r.isSkipped || r.isPending)
 
   def executed = stats(new AllExpectationsSpecification)(args())

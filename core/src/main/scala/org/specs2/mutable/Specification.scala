@@ -5,7 +5,7 @@ import matcher._
 import main.ArgumentsShortcuts
 import org.specs2.execute.StandardResults
 import specification.create.FormattingFragments
-import specification.core.mutable.SpecificationStructure
+import specification.core.mutable.SpecificationStructureIs
 import specification.mutable._
 import specification.dsl.mutable._
 
@@ -14,7 +14,7 @@ import specification.dsl.mutable._
  */
 abstract class Specification extends SpecificationLike
 
-trait SpecificationLike extends SpecificationStructure
+trait SpecificationLike extends SpecificationStructureIs
   with SpecificationCreation
   with SpecificationFeatures
 
@@ -27,7 +27,7 @@ trait SpecificationLike extends SpecificationStructure
  *
  */
 abstract class Spec extends SpecLike
-trait SpecLike extends SpecificationStructure
+trait SpecLike extends SpecificationStructureIs
   with ExampleDsl0
   with ArgumentsCreation
   with ArgumentsShortcuts

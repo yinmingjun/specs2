@@ -10,14 +10,19 @@ import scalaz.std.anyVal._
 import scalaz.syntax.traverse._
 import scalaz.std.list._
 
-trait ContextualSpecificationStructure {
+/**
+ * return the SpecStructure based on the environment
+ */
+trait SpecificationStructure {
   def structure: Env => SpecStructure
   def fragments = (env: Env) => structure(env).fragments
 }
 
-trait SpecificationStructure extends ContextualSpecificationStructure {
-  def is: SpecStructure
-  def structure = (env: Env) => decorate(is, env)
+/**
+ * This specification can be decorated by adding fragments
+ */
+trait SpecificationStructureTemplate extends SpecificationStructure {
+
   def decorate(is: SpecStructure, env: Env) = map(is.map(fs => map(map(fs, env))))
 
   /** modify the specification structure */
@@ -26,6 +31,15 @@ trait SpecificationStructure extends ContextualSpecificationStructure {
   def map(fs: =>Fragments): Fragments = fs
   /** modify the fragments, using the current environment */
   def map(fs: =>Fragments, env: Env): Fragments = fs
+}
+
+/**
+ * This specification doesn't rely on the environment
+ * and can be decorated
+ */
+trait SpecificationStructureIs extends SpecificationStructureTemplate {
+  def is: SpecStructure
+  def structure = (env: Env) => decorate(is, env)
 }
 
 object SpecificationStructure {

@@ -69,7 +69,7 @@ object exs extends MustMatchers with StandardResults with S2StringContext with T
 
   def `a method call` = ok
 
-  val spec = new SpecificationStructure { outer =>
+  val spec = new SpecificationStructureIs { outer =>
     def is = SpecStructure.create(SpecHeader(outer.getClass), Arguments(), Fragments(text("the"), text(" world")))
   }
 
