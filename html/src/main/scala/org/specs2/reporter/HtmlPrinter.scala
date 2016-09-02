@@ -21,6 +21,7 @@ import eff.all._
 import eff.syntax.all._
 import scalaz._, Scalaz._
 import eff.ErrorEffect._
+import Actions._
 
 /**
  * Printer for html files
