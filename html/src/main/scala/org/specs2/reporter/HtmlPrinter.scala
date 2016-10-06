@@ -39,7 +39,7 @@ trait HtmlPrinter extends Printer {
     }
 
   /** @return a SinkTask for the Html output */
-  def sink(env: Env, spec: SpecStructure): SinkTask[Fragment] = {
+  def sink(env: Env, spec: SpecStructure): AsyncSink[Fragment] = {
     ((Statistics.fold zip FoldId.list[Fragment]).into[Task] <*
      fromStart((getHtmlOptions(env.arguments) >>= (options => copyResources(env, options))).toTask(env.systemLogger).void)).mapFlatten { case (stats, fragments) =>
       val expecutedSpec = spec.copy(lazyFragments = () => Fragments(fragments:_*))
