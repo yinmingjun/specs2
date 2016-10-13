@@ -3,8 +3,8 @@ package reporter
 
 import matcher.DataTable
 import control._
-import data._
-import foldm._, stream._, FoldProcessM._
+import origami._
+import eff.all._
 import specification.core._
 import specification.process._
 import text.NotNullStrings._
@@ -12,9 +12,6 @@ import text.Trim
 import Trim._
 import execute._
 import main.Arguments
-import org.specs2.codata._
-import scalaz.concurrent.Task
-import scalaz.concurrent.Task._
 import LogLine._
 import scalaz._, Scalaz._
 
@@ -36,31 +33,30 @@ trait TextPrinter extends Printer {
     lazy val logger = env.lineLogger
     lazy val args   = env.arguments <| spec.arguments
 
-    lazy val sink: Sink[Task, (S, Fragment)] =
-      fragmentsSink(logger, spec.header, args).map { write: (LogLine => Task[Unit]) =>
-        (current: (S, Fragment)) => printFragment(args)(current.swap).traverseU(write).void
-      }
+    lazy val sink: AsyncSink[(Fragment, S)] =
+      (Folds.fromStart(start(logger, spec.header, args)) *> lineLoggerSink(logger, spec.header, args)).
+        asFoldable[List].
+        contramap[(Fragment, S)](printFragment(args))
 
-    (values.into[Task] <<* fromSink(sink)).mapFlatten(printFinalStats(spec, args, logger))
+    (values.into[ActionStack] observeWithState sink.contramap(_.swap)).mapFlatten(printFinalStats(spec, args, logger))
   }
 
   /** run and shutdown the environment */
   def run(env: Env): SpecStructure => Unit = { spec: SpecStructure =>
-    try     print(env)(spec).run
+    try     print(env)(spec).toConsoleTask.run
     finally env.shutdown
   }
 
-  def fragmentsSink(logger: LineLogger, header: SpecHeader, args: Arguments): Sink[Task, LogLine] =
-    Processes.resource(start(logger, header, args))(_ => Task.now(()))(logger =>
-      Task.delay((line: LogLine) => Task.now(line.log(logger)))
-    )
+  def lineLoggerSink(logger: LineLogger, header: SpecHeader, args: Arguments): AsyncSink[LogLine] =
+    Folds.fromSink[ActionStack, LogLine](line =>
+      asyncDelay[ActionStack, Unit](line.log(logger)))
 
-  def start(logger: LineLogger, header: SpecHeader, args: Arguments): Task[LineLogger] =
-    Task.delay(printHeader(args)(header).foreach(_.log(logger))).as(logger)
+  def start(logger: LineLogger, header: SpecHeader, args: Arguments): Action[LineLogger] =
+    asyncDelay[ActionStack, Unit](printHeader(args)(header).foreach(_.log(logger))).as(logger)
 
-  def printFinalStats(spec: SpecStructure, args: Arguments, logger: LineLogger): ((Stats, Int)) => Task[Unit] = { case (stats, _) =>
-    Task.delay(printStats(spec.header, args)(stats).foreach(_.log(logger))) >>
-    Task.delay(logger.close)
+  def printFinalStats(spec: SpecStructure, args: Arguments, logger: LineLogger): ((Stats, Int)) => Action[Unit] = { case (stats, _) =>
+    asyncDelay[ActionStack, Unit](printStats(spec.header, args)(stats).foreach(_.log(logger))) >>
+    asyncDelay[ActionStack, Unit](logger.close)
   }
 
   def printHeader(args: Arguments): SpecHeader => List[LogLine] = { header: SpecHeader =>
